@@ -23,6 +23,7 @@ type ApplyFormProps = {
   onSubmit?: (values: ApplicationFormValues) => void | Promise<void>;
   disabled?: boolean;
   statusHref?: string;
+  defaultValues?: ApplicationFormValues;
 };
 
 const FULL_WIDTH_TYPES = new Set([
@@ -45,10 +46,11 @@ export function ApplyForm({
   onSubmit,
   disabled = false,
   statusHref = "/apply/status",
+  defaultValues
 }: ApplyFormProps) {
   const form = useForm<ApplicationFormValues>({
     resolver: zodResolver(applicationSchema) as Resolver<ApplicationFormValues>,
-    defaultValues: defaultApplicationValues,
+    defaultValues: defaultValues ?? defaultApplicationValues,
     mode: "onBlur",
     shouldFocusError: true,
   });
@@ -58,6 +60,7 @@ export function ApplyForm({
 
   const submit = form.handleSubmit(async (values) => {
     await onSubmit?.(values);
+    
   });
 
   return (
