@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
 import { emailBrand } from "@/lib/emails/chrome";
 
+import { getApplication } from "../actions";
+
 export const metadata: Metadata = {
   title: "Application status",
   description: "See the status of your Hack(H)er413 application.",
@@ -28,6 +30,7 @@ type StatusPageProps = {
  */
 export default async function ApplyStatusPage({ searchParams }: StatusPageProps) {
   await requireUser();
+  const application = await getApplication()
   const params = await searchParams;
   const showAdmitPreview = params.preview === "admit";
 
@@ -74,7 +77,7 @@ export default async function ApplyStatusPage({ searchParams }: StatusPageProps)
             <div>
               <dt className="text-muted-foreground">Status</dt>
               <dd className="mt-1 text-lg font-medium text-foreground">
-                No application yet
+                { application ? application.status.charAt(0).toUpperCase() + application.status.slice(1): "No application yet"}
               </dd>
             </div>
             <div>

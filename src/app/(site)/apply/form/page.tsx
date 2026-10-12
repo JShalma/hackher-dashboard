@@ -5,6 +5,11 @@ import { PageHeader } from "@/components/content";
 import { Section } from "@/components/layout";
 import { requireUser } from "@/lib/auth";
 
+import { mapApplicationToFormValues } from "@/lib/applications/map-db-to-form";
+import { defaultApplicationValues } from "@/lib/applications/application-schema";
+
+import { getApplication, submitApplication } from "../actions";
+
 export const metadata: Metadata = {
   title: "Application form",
   description: "Start or continue your Hack(H)er413 application.",
@@ -17,6 +22,8 @@ export const metadata: Metadata = {
  */
 export default async function ApplyFormPage() {
   await requireUser();
+  const application = await getApplication();
+  const applicationFormValues = application ? mapApplicationToFormValues(application) : { ...defaultApplicationValues }; 
 
   return (
     <>
@@ -26,7 +33,7 @@ export default async function ApplyFormPage() {
       />
 
       <Section spacing="md" className="pt-4 sm:pt-8">
-        <ApplyForm />
+        <ApplyForm onSubmit={submitApplication} defaultValues={applicationFormValues}  />
       </Section>
     </>
   );

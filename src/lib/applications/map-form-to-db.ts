@@ -59,7 +59,7 @@ export type ApplicationCoreFormValues = {
   resumeUrl?: string | null;
 };
 
-function customKeyFor(field: ApplicationField): string {
+export function customKeyFor(field: ApplicationField): string {
   return field.customKey ?? field.id;
 }
 
