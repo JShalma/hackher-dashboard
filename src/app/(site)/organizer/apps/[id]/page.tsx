@@ -7,6 +7,8 @@ import { Section } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { requireOrganizer } from "@/lib/auth";
 
+import { getApplicationById } from "@/app/(site)/apply/actions";
+
 const STUB_APPS: Record<
   string,
   { name: string; email: string; status: string; school: string }
@@ -51,14 +53,15 @@ export async function generateMetadata({
  */
 export default async function OrganizerAppDetailPage({ params }: PageProps) {
   await requireOrganizer();
+  
   const { id } = await params;
-  const app = STUB_APPS[id];
+  const app = await getApplicationById(id);
   if (!app) notFound();
 
   return (
     <>
       <PageHeader
-        title={app.name}
+        title={`${app.firstName} ${app.lastName}` }
         lead="Detail stub - core + customFields will render here from the DB."
       />
 
@@ -77,7 +80,7 @@ export default async function OrganizerAppDetailPage({ params }: PageProps) {
             </div>
             <div className="sm:col-span-2">
               <dt className="text-muted-foreground">School</dt>
-              <dd className="mt-1 font-medium text-foreground">{app.school}</dd>
+              <dd className="mt-1 font-medium text-foreground">{app.customFields?.school}</dd>
             </div>
           </dl>
           <Button asChild variant="outline">

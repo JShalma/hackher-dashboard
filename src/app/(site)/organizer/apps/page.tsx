@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/content";
 import { Section } from "@/components/layout";
 import { requireOrganizer } from "@/lib/auth";
 
+import { fetchAppsList } from "@/app/(site)/organizer/apps/actions";
+
 export const metadata: Metadata = {
   title: "Applications",
   description: "Organizer application queue.",
@@ -39,6 +41,7 @@ const STUB_APPS = [
  */
 export default async function OrganizerAppsPage() {
   await requireOrganizer();
+  const appLst = await fetchAppsList();
 
   return (
     <>
@@ -49,14 +52,14 @@ export default async function OrganizerAppsPage() {
 
       <Section spacing="md" className="pt-4 sm:pt-8">
         <ul className="divide-y divide-border border-y border-border">
-          {STUB_APPS.map((app) => (
+          {appLst.map((app) => (
             <li key={app.id}>
               <Link
                 href={`/organizer/apps/${app.id}`}
                 className="flex flex-col gap-1 py-4 transition-colors hover:bg-muted/50 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
               >
                 <div>
-                  <p className="font-medium text-foreground">{app.name}</p>
+                  <p className="font-medium text-foreground">{app.firstName} {app.lastName}</p>
                   <p className="text-sm text-muted-foreground">{app.email}</p>
                 </div>
                 <p className="text-sm capitalize text-muted-foreground">
