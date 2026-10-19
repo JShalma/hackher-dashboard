@@ -10,6 +10,7 @@ import { applications } from "@/db/schema";
 import { applicationSchema } from "@/lib/applications/application-schema";
 import { splitApplicationFormValues } from "@/lib/applications/map-form-to-db";
 import { requireOrganizer, requireUser } from "@/lib/auth";
+import { submitApplicationLimiter } from "@/lib/rate-limit";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -92,6 +93,13 @@ export async function getApplicationById(applicationId: string) {
  */
 export async function submitApplication(values: Record<string, unknown>) {
   const { userId } = await requireUser();
+
+  const rate = submitApplicationLimiter.check(`submit:${userId}`);
+  if (!rate.ok) {
+    throw new Error(
+      "Too many submit attempts. Please wait a few minutes and try again.",
+    );
+  }
 
   if (!applyStatus.isOpen) {
     throw new Error("Applications are currently closed.");
