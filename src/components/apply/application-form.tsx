@@ -33,7 +33,11 @@ const FULL_WIDTH_TYPES = new Set([
   "checkbox",
 ]);
 
-const FULL_WIDTH_FIELD_IDS = new Set(["schoolOther", "majorOther"]);
+const FULL_WIDTH_FIELD_IDS = new Set([
+  "schoolOther",
+  "majorOther",
+  "resumeUrl",
+]);
 
 function fieldSpan(field: { id: string; type: string }) {
   if (FULL_WIDTH_FIELD_IDS.has(field.id)) {

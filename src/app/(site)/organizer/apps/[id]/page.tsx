@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/content";
 import { Section } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { requireOrganizer } from "@/lib/auth";
+import { resumeViewHref } from "@/lib/applications/resume-url";
 
 import { getApplicationById } from "@/app/(site)/apply/actions";
 
@@ -80,7 +81,28 @@ export default async function OrganizerAppDetailPage({ params }: PageProps) {
             </div>
             <div className="sm:col-span-2">
               <dt className="text-muted-foreground">School</dt>
-              <dd className="mt-1 font-medium text-foreground">{app.customFields?.school}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                {typeof app.customFields?.school === "string"
+                  ? app.customFields.school
+                  : null}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-muted-foreground">Resume</dt>
+              <dd className="mt-1 font-medium text-foreground">
+                {app.resumeUrl ? (
+                  <a
+                    href={resumeViewHref(app.resumeUrl)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    View PDF
+                  </a>
+                ) : (
+                  <span className="text-muted-foreground">Not provided</span>
+                )}
+              </dd>
             </div>
           </dl>
           <Button asChild variant="outline">

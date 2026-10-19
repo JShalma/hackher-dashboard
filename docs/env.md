@@ -40,6 +40,7 @@ Set the same keys in the Vercel project → **Settings → Environment Variables
 | `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` | `/apply` | `/apply` | `/apply` | |
 | `RESEND_API_KEY` | yes | yes | yes | Same account OK for MVP |
 | `RESEND_FROM_EMAIL` | verified from-address | same | same | Domain must be verified in Resend |
+| `BLOB_READ_WRITE_TOKEN` | yes (for local uploads) | yes | yes | From Vercel Blob store; required for client resume uploads |
 
 ### Clerk notes
 
@@ -73,6 +74,13 @@ npm run email:test -- --template accepted you@example.com
 ```
 
 Confirm each inbox receives the message and that Resend Dashboard → Domains shows the sending domain as **Verified**.
+
+### Vercel Blob notes (resume uploads)
+
+1. Vercel project → **Storage** → create a **Blob** store (Private is fine — resumes are sensitive).
+2. Connect it to **Development**, **Preview**, and **Production**. If local `vercel env pull` only gets `VERCEL_OIDC_TOKEN` and not `BLOB_READ_WRITE_TOKEN`, Development is missing from the store’s project connection.
+3. Pull secrets: `vercel env pull .env.local` — then **re-add** Neon / Clerk / Resend from the vault if pull overwrote them.
+4. Uploads go through `/api/resume/upload` (`access: "private"`). View via `/api/resume/file` (auth’d). URL is saved in `applications.resume_url`.
 
 ## Preview verification checklist (task 11)
 
