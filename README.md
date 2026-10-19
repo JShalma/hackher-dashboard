@@ -48,8 +48,15 @@ Clerk session wiring lives in `src/proxy.ts`. Roles are **not** env vars — set
 | `requireOrganizer()` | Organizer list, detail, status actions | Same as above, then `forbidden()` (403) if role is not organizer/admin |
 | `getCurrentRole()` | Soft UI checks | Returns role or `undefined`; never throws |
 | `isOrganizerRole(role)` | Client-safe role checks | `true` for `organizer` \| `admin` |
+| `roleFromPublicMetadata(meta)` | Parsing Clerk metadata | Pure helper in `auth-role.ts`; used by `requireOrganizer` |
 
 Call the require helpers at the top of Server Components, Server Actions, and Route Handlers. Do not import `@/lib/auth` from Client Components.
+
+Role-gate regression tests: `npm test` (Vitest) covers `auth-role` + submit rate-limit.
+
+### Rate limit (`src/lib/rate-limit.ts`)
+
+In-memory sliding window used by `submitApplication` (`5` attempts / `10` minutes / user). Softens abuse on a single instance; upgrade to Redis if you need cross-instance limits.
 
 ### Database (`src/db`)
 
