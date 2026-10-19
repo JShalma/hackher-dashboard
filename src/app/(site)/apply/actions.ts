@@ -5,6 +5,7 @@ import { eq, and } from 'drizzle-orm'
 
 import { db } from "@/db"
 import { applications } from '@/db/schema';
+import { applyStatus } from "@/content/apply";
 import { splitApplicationFormValues } from '@/lib/applications/map-form-to-db';
 import { redirect } from "next/navigation";
 import { requireOrganizer } from "@/lib/auth";
@@ -70,8 +71,15 @@ export async function submitApplication(values: Record<string, unknown>) {
         throw new Error("You must be signed in to apply");
     }
 
+    if (!applyStatus.isOpen) {
+        throw new Error("Applications are currently closed.");
+    }
+
     const [ existingApplication ] = await db.select().from(applications).where(eq(applications.clerkUserId, userId)).limit(1);
-    
+
+    if (!existingApplication) {
+        throw new Error("No application found to submit.");
+    }
 
     await db
     .update(applications)
@@ -83,7 +91,7 @@ export async function submitApplication(values: Record<string, unknown>) {
     })
     .where(
       and(
-        eq(applications.clerkUserId, existingApplication.clerkUserId),
+        eq(applications.clerkUserId, userId),
         eq(applications.id, existingApplication.id),
       ),
     );
