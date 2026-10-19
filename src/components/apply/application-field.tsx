@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { ResumeUploadField } from "@/components/apply/resume-upload-field";
 import type { ApplicationField as ApplicationFieldConfig } from "@/content/application-form";
 import type { ApplicationFormValues } from "@/lib/applications/application-schema";
 
@@ -79,6 +80,17 @@ function ApplicationFieldBody({
   const error = errors[field.id];
   const invalid = Boolean(error);
   const helpId = field.helpText ? `${field.id}-help` : undefined;
+
+  if (field.id === "resumeUrl") {
+    return (
+      <ResumeUploadField
+        control={control}
+        errors={errors}
+        required={field.required}
+        helpText={field.helpText}
+      />
+    );
+  }
 
   if (field.type === "toggle") {
     return (

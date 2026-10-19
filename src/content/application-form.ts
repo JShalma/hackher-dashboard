@@ -281,9 +281,7 @@ export const applicationFormSections: ApplicationFormSection[] = [
         type: "url",
         required: false,
         storage: "core",
-        helpText:
-          "Suggested. Link to a PDF (Drive, Dropbox, personal site, etc.).",
-        placeholder: "https://",
+        helpText: "Suggested. Upload a PDF (up to 5 MB).",
       },
       {
         id: "linkedinUrl",
