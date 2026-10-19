@@ -17,9 +17,28 @@ export const metadata: Metadata = {
   description: applyIntro.lead,
 };
 
+function ApplyCta({
+  isOpen,
+  label,
+}: {
+  isOpen: boolean;
+  label: string;
+}) {
+  return (
+    <Button asChild size="xl" variant="honey">
+      {isOpen ? (
+        <Link href="/apply/form">{label}</Link>
+      ) : (
+        <a href={mailingListUrl} target="_blank" rel="noopener noreferrer">
+          {label}
+        </a>
+      )}
+    </Button>
+  );
+}
+
 export default function ApplyPage() {
   const isOpen = applyStatus.isOpen;
-  const ctaHref = isOpen ? "/apply/form" : mailingListUrl;
   const ctaLabel = isOpen ? "Start your application" : "Join the mailing list";
 
   return (
@@ -28,11 +47,7 @@ export default function ApplyPage() {
 
       <Section spacing="md" className="pt-4 sm:pt-8">
         <div className="flex flex-col items-start gap-4">
-          <Button asChild size="xl" variant="honey">
-            <a href={ctaHref} target="_blank" rel="noopener noreferrer">
-              {ctaLabel}
-            </a>
-          </Button>
+          <ApplyCta isOpen={isOpen} label={ctaLabel} />
           <p className="text-sm text-muted-foreground">{applyStatus.deadline}</p>
         </div>
       </Section>
@@ -75,11 +90,7 @@ export default function ApplyPage() {
               ? "Ten minutes on the form. Then show up and build."
               : "Applications for 2026 have closed - join the list and we'll reach out when 2027 opens."}
           </p>
-          <Button asChild size="xl" variant="honey">
-            <a href={ctaHref} target="_blank" rel="noopener noreferrer">
-              {ctaLabel}
-            </a>
-          </Button>
+          <ApplyCta isOpen={isOpen} label={ctaLabel} />
           <p className="text-sm text-cream/55">
             Questions first?{" "}
             <Link

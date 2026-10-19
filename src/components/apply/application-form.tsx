@@ -22,6 +22,10 @@ import {
 type ApplyFormProps = {
   onSubmit?: (values: ApplicationFormValues) => void | Promise<void>;
   disabled?: boolean;
+  /** Shown when submissions are closed (deadline / mailing-list copy). */
+  closedMessage?: string;
+  /** Privacy one-liner under the required-fields note. */
+  privacyNote?: string;
   statusHref?: string;
   defaultValues?: ApplicationFormValues;
 };
@@ -49,8 +53,10 @@ function fieldSpan(field: { id: string; type: string }) {
 export function ApplyForm({
   onSubmit,
   disabled = false,
+  closedMessage,
+  privacyNote,
   statusHref = "/apply/status",
-  defaultValues
+  defaultValues,
 }: ApplyFormProps) {
   const form = useForm<ApplicationFormValues>({
     resolver: zodResolver(applicationSchema) as Resolver<ApplicationFormValues>,
@@ -98,33 +104,47 @@ export function ApplyForm({
         </FieldSet>
       ))}
 
-      <div className="flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted-foreground">
-          Fields marked <span className="text-destructive">*</span> are
-          required.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button
-            asChild
-            type="button"
-            variant="outline"
-            size="xl"
-            className="sm:w-auto"
-          >
-            <Link href={statusHref}>Check status</Link>
-          </Button>
-          <Button
-            type="submit"
-            variant="honey"
-            size="xl"
-            disabled={disabled || isSubmitting}
-          >
-            {disabled
-              ? "Submissions closed"
-              : isSubmitting
-                ? "Submitting…"
-                : "Submit application"}
-          </Button>
+      <div className="flex flex-col gap-4 border-t border-border pt-6">
+        {disabled && closedMessage ? (
+          <p className="text-sm text-muted-foreground text-pretty">
+            {closedMessage}
+          </p>
+        ) : null}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex max-w-md flex-col gap-1.5">
+            <p className="text-sm text-muted-foreground">
+              Fields marked <span className="text-destructive">*</span> are
+              required.
+            </p>
+            {privacyNote ? (
+              <p className="text-sm text-muted-foreground text-pretty">
+                {privacyNote}
+              </p>
+            ) : null}
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button
+              asChild
+              type="button"
+              variant="outline"
+              size="xl"
+              className="sm:w-auto"
+            >
+              <Link href={statusHref}>Check status</Link>
+            </Button>
+            <Button
+              type="submit"
+              variant="honey"
+              size="xl"
+              disabled={disabled || isSubmitting}
+            >
+              {disabled
+                ? "Submissions closed"
+                : isSubmitting
+                  ? "Submitting…"
+                  : "Submit application"}
+            </Button>
+          </div>
         </div>
       </div>
     </form>

@@ -125,6 +125,9 @@ function ApplicationFieldBody({
   }
 
   if (field.type === "checkbox") {
+    const linksId = field.links?.length ? `${field.id}-links` : undefined;
+    const describedBy = [helpId, linksId].filter(Boolean).join(" ") || undefined;
+
     return (
       <Controller
         control={control}
@@ -137,7 +140,7 @@ function ApplicationFieldBody({
                 checked={Boolean(input.value)}
                 onCheckedChange={input.onChange}
                 aria-invalid={invalid}
-                aria-describedby={helpId}
+                aria-describedby={describedBy}
                 className="mt-0.5"
               />
               <FieldLabel
@@ -152,6 +155,25 @@ function ApplicationFieldBody({
             </div>
             {field.helpText ? (
               <FieldDescription id={helpId}>{field.helpText}</FieldDescription>
+            ) : null}
+            {field.links?.length ? (
+              <FieldDescription id={linksId} className="flex flex-wrap gap-x-3 gap-y-1">
+                {field.links.map((link) => {
+                  const external = link.href.startsWith("http");
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="underline underline-offset-2 hover:text-foreground"
+                      {...(external
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </FieldDescription>
             ) : null}
             <FieldError errors={[error]} />
           </Field>

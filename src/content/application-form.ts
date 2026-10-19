@@ -25,6 +25,11 @@ export type ApplicationFieldOption = {
   label: string;
 };
 
+export type ApplicationFieldLink = {
+  label: string;
+  href: string;
+};
+
 export type ApplicationField = {
   id: string;
   label: string;
@@ -35,6 +40,8 @@ export type ApplicationField = {
   customKey?: string;
   options?: ApplicationFieldOption[];
   helpText?: string;
+  /** External policy docs shown under agreement checkboxes. */
+  links?: ApplicationFieldLink[];
   placeholder?: string;
   /** Show this field only when another field matches. */
   showWhen?: { fieldId: string; equals: string | boolean };
@@ -395,6 +402,7 @@ export const applicationFormSections: ApplicationFormSection[] = [
   {
     id: "agreements",
     title: "Agreements",
+    description: "Required checkboxes must be checked to submit.",
     fields: [
       {
         id: "hackherTerms",
@@ -403,6 +411,14 @@ export const applicationFormSections: ApplicationFormSection[] = [
         type: "checkbox",
         required: true,
         storage: "customFields",
+        helpText:
+          "Includes photo/video consent and liability waiver for the event.",
+        links: [
+          {
+            label: "Code of conduct (FAQ)",
+            href: "/faq",
+          },
+        ],
       },
       {
         id: "mlhTerms",
@@ -411,6 +427,20 @@ export const applicationFormSections: ApplicationFormSection[] = [
         type: "checkbox",
         required: true,
         storage: "customFields",
+        links: [
+          {
+            label: "MLH Code of Conduct",
+            href: "https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md",
+          },
+          {
+            label: "Privacy Policy",
+            href: "https://github.com/MLH/mlh-policies/blob/main/privacy-policy.md",
+          },
+          {
+            label: "Contest Terms",
+            href: "https://github.com/MLH/mlh-policies/blob/main/contest-terms.md",
+          },
+        ],
       },
       {
         id: "mlhCommunications",
