@@ -29,15 +29,12 @@ export async function getApplication() {
         throw new Error('A valid email address is required.');
     }
 
-    if (!user.firstName || !user.lastName) {
-        throw new Error('Your first and last name are required.');
-    }
-
+    // Clerk profile names are optional; the apply form collects/requires them on submit.
     const [newApplication] = await db.insert(applications).values({
         clerkUserId: userId,
         email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        firstName: user.firstName?.trim() || "",
+        lastName: user.lastName?.trim() || "",
     }).onConflictDoNothing({
         target: applications.clerkUserId
     })
