@@ -60,6 +60,10 @@ export const applications = pgTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
+    statusUpdatedBy: text("status_updated_by"),
+    statusUpdatedAt: timestamp("status_updated_at", { withTimezone: true }),
+    flaggedBy: text("flagged_by"),
+    flaggedAt: timestamp("flagged_at", { withTimezone: true })
   },
   (table) => [
     index("applications_status_idx").on(table.status),

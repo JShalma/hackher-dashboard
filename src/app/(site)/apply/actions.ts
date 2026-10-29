@@ -1,9 +1,9 @@
 'use server'
 
-import { auth, currentUser } from "@clerk/nextjs/server"
-import { eq, and } from 'drizzle-orm'
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { eq, and } from 'drizzle-orm';
 
-import { db } from "@/db"
+import { db } from "@/db";
 import { applications } from '@/db/schema';
 import { splitApplicationFormValues } from '@/lib/applications/map-form-to-db';
 import { redirect } from "next/navigation";

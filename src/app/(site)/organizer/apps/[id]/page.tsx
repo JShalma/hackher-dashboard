@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { requireOrganizer } from "@/lib/auth";
 
 import { getApplicationById } from "@/app/(site)/apply/actions";
+import { ChangeUserStatusButton, FlagUserButton } from "@/components/ui/button-wrapper";
 
 const STUB_APPS: Record<
   string,
@@ -83,9 +84,15 @@ export default async function OrganizerAppDetailPage({ params }: PageProps) {
               <dd className="mt-1 font-medium text-foreground">{app.customFields?.school}</dd>
             </div>
           </dl>
-          <Button asChild variant="outline">
-            <Link href="/organizer/apps">Back to list</Link>
-          </Button>
+           <div className="flex flex-wrap items-center justify-end gap-3">
+
+            <Button asChild variant="outline" className="min-w-28">
+              <Link href="/organizer/apps">Back to list</Link>
+            </Button>
+            <ChangeUserStatusButton actionName="Accept" userId={app.clerkUserId} status="accepted" />
+            <ChangeUserStatusButton actionName="Deny" userId={app.clerkUserId} status="denied" />
+            <FlagUserButton userId={app.clerkUserId} />
+           </div>
         </div>
       </Section>
     </>
