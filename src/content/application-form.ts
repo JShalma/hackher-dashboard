@@ -94,6 +94,15 @@ const softwareTypeOptions: ApplicationFieldOption[] = [
   { value: "other", label: "None, I am interested in something else" },
 ];
 
+/** From dashboard `hardware_skills` options. */
+const hardwareTypeOptions: ApplicationFieldOption[] = [
+  { value: "embedded_systems", label: "Embedded Systems" },
+  { value: "robotics", label: "Robotics" },
+  { value: "wireless_communications", label: "Wireless Communications" },
+  { value: "circuits", label: "Circuits" },
+  { value: "3d_printing", label: "3D Printing" },
+];
+
 const schoolOptions: ApplicationFieldOption[] = [
   { value: "umass_amherst", label: "University of Massachusetts Amherst" },
   { value: "amherst_college", label: "Amherst College" },
@@ -394,6 +403,15 @@ export const applicationFormSections: ApplicationFormSection[] = [
         storage: "customFields",
         options: softwareTypeOptions,
         showWhen: { fieldId: "projectType", equals: "software" },
+      },
+      {
+        id: "hardwareType",
+        label: "What type of hardware?",
+        type: "select",
+        required: false,
+        storage: "customFields",
+        options: hardwareTypeOptions,
+        showWhen: { fieldId: "projectType", equals: "hardware" },
       },
       {
         id: "hasTeam",

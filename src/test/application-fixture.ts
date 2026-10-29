@@ -15,7 +15,7 @@ export const fullAnswers = {
   sexuality: "Queer", underrepresented: "yes", workshopInterest: true,
   workshopDetails: "Accessible robotics with Raspberry Pi",
   projectType: "hardware", softwareType: "front_end",
-  hasTeam: "looking", howHeard: "club",
+  hardwareType: "robotics", hasTeam: "looking", howHeard: "club",
   hackherTerms: true, mlhTerms: true, mlhCommunications: false,
 } satisfies Required<ApplicationCustomFields>;
 
@@ -60,6 +60,7 @@ export const expectedAnswers = {
   workshopDetails: ["What would you talk about?", fullAnswers.workshopDetails],
   projectType: ["Do you want to build a hardware or software project?", "Hardware"],
   softwareType: ["What type of software?", "Front-end development"],
+  hardwareType: ["What type of hardware?", "Robotics"],
   hasTeam: ["Do you have a team?", "Looking for teammates"],
   howHeard: ["How did you hear about Hack(H)er413?", "Club / org"],
   hackherTerms: ["I agree to the Hack(H)er413 Terms & Conditions (photo consent + liability waiver)", "Yes"],
