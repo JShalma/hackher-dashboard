@@ -449,6 +449,14 @@ export const applicationFormSections: ApplicationFormSection[] = [
           },
         ],
       },
+      {
+        id: "snackSuggestion",
+        label: "What snacks/food would you want to see at the event?",
+        type: "textarea",
+        required: false,
+        storage: "customFields",
+        placeholder: "Trail mix, dumplings, late-night pizza…",
+      },
     ],
   },
   {

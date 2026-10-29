@@ -17,6 +17,7 @@ export const fullAnswers = {
   projectType: "hardware", softwareType: "front_end",
   hardwareType: "robotics", hasTeam: "looking", howHeard: "club",
   playlistSong: "Good as Hell — Lizzo",
+  snackSuggestion: "Dumplings and sparkling water",
   hackherTerms: true, mlhTerms: true, mlhCommunications: false,
 } satisfies Required<ApplicationCustomFields>;
 
@@ -65,6 +66,7 @@ export const expectedAnswers = {
   hasTeam: ["Do you have a team?", "Looking for teammates"],
   howHeard: ["How did you hear about Hack(H)er413?", "Club / org"],
   playlistSong: ["Got a song for the event playlist?", "Good as Hell — Lizzo"],
+  snackSuggestion: ["What snacks/food would you want to see at the event?", "Dumplings and sparkling water"],
   hackherTerms: ["I agree to the Hack(H)er413 Terms & Conditions (photo consent + liability waiver)", "Yes"],
   mlhTerms: ["I agree to the MLH Code of Conduct, Privacy Policy, and Contest Terms", "Yes"],
   mlhCommunications: ["I authorize MLH to send me occasional emails about their events and opportunities", "No"],

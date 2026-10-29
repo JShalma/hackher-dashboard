@@ -51,6 +51,7 @@ export type ApplicationCustomFields = {
   hasTeam?: string;
   howHeard?: string;
   playlistSong?: string;
+  snackSuggestion?: string;
   hackherTerms?: boolean;
   mlhTerms?: boolean;
   mlhCommunications?: boolean;
