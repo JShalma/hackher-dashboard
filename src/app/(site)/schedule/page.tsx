@@ -59,11 +59,8 @@ export default function SchedulePage() {
       </Section>
 
       <Section tone="sky" spacing="lg" className="bg-honeycomb-sky">
-        <h2 className="flex items-start gap-3 text-display text-balance">
-          <HexMark size="md" tone="honey" className="mt-[0.55em]" />
-          <span>Prizes</span>
-        </h2>
-        <p className="mt-4 max-w-2xl pl-[1.625rem] text-lead text-sky-foreground/75 text-pretty">
+        <h2 className="text-display text-balance">Prizes</h2>
+        <p className="mt-4 max-w-2xl text-lead text-sky-foreground/75 text-pretty">
           Winners are crowned at the closing ceremony across these categories,
           plus sponsor challenges.
         </p>

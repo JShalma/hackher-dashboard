@@ -1,5 +1,4 @@
 import { Section } from "@/components/layout";
-import { HexMark } from "@/components/content/hex-mark";
 import { homeMission } from "@/content/home";
 
 /**
@@ -10,9 +9,8 @@ export function Mission() {
   return (
     <Section tone="espresso" spacing="lg">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_1.1fr] lg:gap-20 lg:items-start">
-        <h2 className="flex items-start gap-3 text-display text-balance text-cream">
-          <HexMark size="md" tone="honey" className="mt-[0.55em]" />
-          <span>{homeMission.title}</span>
+        <h2 className="text-display text-balance text-cream">
+          {homeMission.title}
         </h2>
         <div className="flex flex-col gap-5 text-lg text-cream/75 text-pretty lg:pt-2">
           {homeMission.body.map((paragraph) => (

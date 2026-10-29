@@ -53,21 +53,15 @@ export default function ApplyPage() {
       </Section>
 
       <Section tone="sky" spacing="lg" className="bg-honeycomb-sky">
-        <h2 className="flex items-start gap-3 text-display text-balance">
-          <HexMark size="md" tone="honey" className="mt-[0.55em]" />
-          <span>How it works</span>
-        </h2>
+        <h2 className="text-display text-balance">How it works</h2>
         <ApplySteps />
       </Section>
 
       <Section spacing="lg">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="flex items-start gap-3 text-display text-balance">
-              <HexMark size="md" tone="sky" className="mt-[0.55em]" />
-              <span>Who should apply</span>
-            </h2>
-            <p className="mt-4 pl-[1.625rem] text-lead text-muted-foreground text-pretty">
+            <h2 className="text-display text-balance">Who should apply</h2>
+            <p className="mt-4 text-lead text-muted-foreground text-pretty">
               If any of this sounds like you, we want to hear from you next
               cycle.
             </p>

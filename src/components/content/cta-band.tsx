@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { Section } from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { HexMark } from "@/components/content/hex-mark";
 
 export type CtaLink = {
   label: string;
@@ -37,16 +36,11 @@ export function CtaBand({ title, description, primary }: CtaBandProps) {
   return (
     <Section tone="honeycomb" spacing="lg">
       <div className="flex max-w-xl flex-col items-start gap-6">
-        <h2 className="flex items-start gap-3 text-display text-balance">
-          <HexMark size="md" tone="honey" className="mt-[0.55em]" />
-          <span>{title}</span>
-        </h2>
+        <h2 className="text-display text-balance">{title}</h2>
         {description ? (
-          <p className="pl-[1.625rem] text-lead text-cream/75 text-pretty">
-            {description}
-          </p>
+          <p className="text-lead text-cream/75 text-pretty">{description}</p>
         ) : null}
-        <div className="pl-[1.625rem]">{button}</div>
+        <div>{button}</div>
       </div>
     </Section>
   );

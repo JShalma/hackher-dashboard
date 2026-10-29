@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Section, Container } from "@/components/layout";
-import { HexMark } from "@/components/content/hex-mark";
 import { Button } from "@/components/ui/button";
 import {
   eventPhotos2026,
@@ -158,8 +157,7 @@ export function PhotoMoments() {
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl">
-            <p className="flex items-center gap-2 text-sm font-medium text-foreground/65">
-              <HexMark size="sm" tone="honey" />
+            <p className="text-sm font-medium text-foreground/65">
               {photosIntro.eyebrow}
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
