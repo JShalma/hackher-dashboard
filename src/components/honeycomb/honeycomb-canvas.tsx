@@ -30,9 +30,9 @@ function usePrefersReducedMotion() {
  *    selection that, after a few frames, RELATES to its neighbors - so a wave
  *    ripples outward hex-to-hex through the comb.
  *
- * Recoloring: the original cycled rainbow hues. We restrict to the brand accent
- * hues - honey (~48°) and sky (~200°) - so ripples read as warm gold and cool
- * blue light against the espresso field.
+ * Recoloring: the original cycled rainbow hues. Opening bloom is butter yellow
+ * (honey ~48°); ongoing ripples sample brown (~33°) and sky (~200°) so the comb
+ * starts warm and settles into brand brown + blue against the espresso field.
  *
  * Perf: pure canvas + a single rAF loop; no per-cell React. Accessibility: it's
  * decorative (aria-hidden). Reduced-motion renders a calm static comb.
@@ -41,8 +41,15 @@ function usePrefersReducedMotion() {
 const RADIUS = 26;
 const RATE = 0.98;
 
-// Brand accent hues to sample ripples from (HSL degrees).
-const BRAND_HUES = [46, 44, 200, 198];
+/** Butter yellow (#fff1b5) - opening bloom only. */
+const BUTTER_HUE = 48;
+/** Soft brown (#5a4326). */
+const BROWN_HUE = 33;
+/** Sky blue (#c1dbe8). */
+const SKY_HUE = 200;
+
+// Ongoing ripples: brown + blue (after the butter opening).
+const BRAND_HUES = [BROWN_HUE, 30, SKY_HUE, 198];
 
 type Selection = { count: number; hue: number };
 type Source = { indices: number[]; hue: number; count: number; hops: number };
@@ -54,7 +61,7 @@ const RIPPLE_HOPS = 3;
 class Hex {
   x: number;
   y: number;
-  hue = 46;
+  hue = BUTTER_HUE;
   neighbors: (Hex | null)[] = new Array(6).fill(null);
   selections: Selection[] = [];
   sources: Source[] = [];
@@ -235,10 +242,10 @@ export function HoneycombCanvas({ className }: { className?: string }) {
       ctx.globalCompositeOperation = "lighter";
       ctx.translate(hex.x, hex.y);
       drawHexPath();
-      // Base comb - readable on the open right without competing with copy.
-      ctx.fillStyle = `hsla(28, 35%, ${LUM_MIN + 4}%, 0.16)`;
+      // Base comb defaults to butter yellow; ripples shift to brown + blue.
+      ctx.fillStyle = `hsla(${BUTTER_HUE}, 70%, ${LUM_MIN + 8}%, 0.2)`;
       ctx.fill();
-      ctx.strokeStyle = `hsla(40, 45%, 28%, 0.14)`;
+      ctx.strokeStyle = `hsla(${BUTTER_HUE}, 55%, 32%, 0.18)`;
       ctx.stroke();
 
       drawSelections(hex.selections);
@@ -293,10 +300,16 @@ export function HoneycombCanvas({ className }: { className?: string }) {
         drawHexPath();
         const d = Math.hypot(hex.x - cxp, hex.y - cyp);
         const bloom = Math.max(0, 1 - d / (Math.max(width, height) * 0.5));
-        const hue = hex.x < width / 2 ? 46 : 200;
-        ctx.fillStyle = `hsla(${hue}, 90%, ${LUM_MIN + bloom * 30}%, 0.28)`;
+        // Default butter field with a soft brown→sky bloom across the comb.
+        const hue =
+          bloom > 0.55
+            ? BUTTER_HUE
+            : hex.x < width / 2
+              ? BROWN_HUE
+              : SKY_HUE;
+        ctx.fillStyle = `hsla(${hue}, 85%, ${LUM_MIN + bloom * 30}%, 0.28)`;
         ctx.fill();
-        ctx.strokeStyle = `hsla(20, 40%, ${LUM_MIN + bloom * 20}%, 0.32)`;
+        ctx.strokeStyle = `hsla(${BUTTER_HUE}, 50%, ${LUM_MIN + bloom * 20}%, 0.32)`;
         ctx.stroke();
         ctx.restore();
       }
@@ -367,11 +380,11 @@ export function HoneycombCanvas({ className }: { className?: string }) {
       return right.length ? right : hexes;
     };
 
-    // Seed a couple of gentle ripples so the open field feels alive on load.
+    // Open on butter yellow, then idle/pointer ripples shift to brown + blue.
     const pool = sparkPool();
     if (pool.length) {
-      pool[rand(0, pool.length)].select(46);
-      if (pool.length > 1) pool[rand(0, pool.length)].select(200);
+      pool[rand(0, pool.length)].select(BUTTER_HUE);
+      if (pool.length > 1) pool[rand(0, pool.length)].select(BUTTER_HUE);
     }
 
     // Run the rAF loop and idle sparks only while the hero is on screen. Once
