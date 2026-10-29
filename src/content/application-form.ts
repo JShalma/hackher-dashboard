@@ -85,6 +85,15 @@ const projectTypeOptions: ApplicationFieldOption[] = [
   { value: "software", label: "Software" },
 ];
 
+/** From dashboard `hack_preference` software-side options. */
+const softwareTypeOptions: ApplicationFieldOption[] = [
+  { value: "front_end", label: "Front-end development" },
+  { value: "back_end", label: "Back-end development" },
+  { value: "full_stack", label: "Full-stack development" },
+  { value: "mobile", label: "Mobile development" },
+  { value: "other", label: "None, I am interested in something else" },
+];
+
 const schoolOptions: ApplicationFieldOption[] = [
   { value: "umass_amherst", label: "University of Massachusetts Amherst" },
   { value: "amherst_college", label: "Amherst College" },
@@ -376,6 +385,15 @@ export const applicationFormSections: ApplicationFormSection[] = [
         required: false,
         storage: "customFields",
         options: projectTypeOptions,
+      },
+      {
+        id: "softwareType",
+        label: "What type of software?",
+        type: "select",
+        required: false,
+        storage: "customFields",
+        options: softwareTypeOptions,
+        showWhen: { fieldId: "projectType", equals: "software" },
       },
       {
         id: "hasTeam",

@@ -14,7 +14,8 @@ export const fullAnswers = {
   portfolioUrl: "https://priya.example.com/", race: "Asian",
   sexuality: "Queer", underrepresented: "yes", workshopInterest: true,
   workshopDetails: "Accessible robotics with Raspberry Pi",
-  projectType: "hardware", hasTeam: "looking", howHeard: "club",
+  projectType: "hardware", softwareType: "front_end",
+  hasTeam: "looking", howHeard: "club",
   hackherTerms: true, mlhTerms: true, mlhCommunications: false,
 } satisfies Required<ApplicationCustomFields>;
 
@@ -58,6 +59,7 @@ export const expectedAnswers = {
   workshopInterest: ["Interested in hosting a workshop or talk?", "Yes"],
   workshopDetails: ["What would you talk about?", fullAnswers.workshopDetails],
   projectType: ["Do you want to build a hardware or software project?", "Hardware"],
+  softwareType: ["What type of software?", "Front-end development"],
   hasTeam: ["Do you have a team?", "Looking for teammates"],
   howHeard: ["How did you hear about Hack(H)er413?", "Club / org"],
   hackherTerms: ["I agree to the Hack(H)er413 Terms & Conditions (photo consent + liability waiver)", "Yes"],
