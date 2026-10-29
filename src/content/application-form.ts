@@ -433,6 +433,22 @@ export const applicationFormSections: ApplicationFormSection[] = [
         storage: "customFields",
         options: hearAboutOptions,
       },
+      {
+        id: "playlistSong",
+        label: "Got a song for the event playlist?",
+        type: "text",
+        required: false,
+        storage: "customFields",
+        placeholder: "Song title or artist",
+        helpText:
+          "Optional. Add it on Spotify, or drop a song name here and we'll cue it up.",
+        links: [
+          {
+            label: "Open the Spotify playlist",
+            href: "https://open.spotify.com/playlist/7rCmyqknGvXy3ZJTAVlrM9?si=779a819f75df40eb&pt=de60ba1602e49abb57f1baa2cce1be0e",
+          },
+        ],
+      },
     ],
   },
   {

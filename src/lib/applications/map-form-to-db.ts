@@ -50,6 +50,7 @@ export type ApplicationCustomFields = {
   hardwareType?: string;
   hasTeam?: string;
   howHeard?: string;
+  playlistSong?: string;
   hackherTerms?: boolean;
   mlhTerms?: boolean;
   mlhCommunications?: boolean;
