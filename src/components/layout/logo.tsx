@@ -38,7 +38,7 @@ export function Logo({
   linked = true,
 }: LogoProps) {
   const classes = cn(
-    "group inline-flex items-center gap-2 font-semibold tracking-tight rounded-sm",
+    "inline-flex items-center gap-2 font-semibold tracking-tight rounded-sm",
     sizeClass[size],
     tone === "onDark" ? "text-cream" : "text-foreground",
     linked &&
@@ -65,19 +65,7 @@ export function Logo({
             : {}),
         }}
       />
-      <span className="inline-flex items-baseline">
-        <span>Hack</span>
-        <span
-          aria-hidden="true"
-          className="mx-0.5 rounded-[0.3em] bg-honey px-1 text-honey-foreground transition-colors duration-300 group-hover:bg-sky group-hover:text-sky-foreground"
-        >
-          (H)
-        </span>
-        <span>er</span>
-        <span className={tone === "onDark" ? "text-cream" : "text-foreground"}>
-          413
-        </span>
-      </span>
+      <span>Hack(H)er413</span>
     </>
   );
 

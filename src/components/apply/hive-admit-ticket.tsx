@@ -68,11 +68,7 @@ export function HiveAdmitTicket({
                 />
                 <div className="flex flex-col gap-0.5">
                   <p className="text-base font-bold tracking-tight text-espresso sm:text-lg">
-                    Hack
-                    <span className="mx-0.5 rounded-md bg-honey px-1.5 text-honey-foreground">
-                      (H)
-                    </span>
-                    er413
+                    Hack(H)er413
                     <span className="ml-2 text-sm font-normal text-brand/60">
                       {emailBrand.cycleYear}
                     </span>

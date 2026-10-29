@@ -204,20 +204,7 @@ export async function renderHiveAdmitTicket(
                       letterSpacing: -0.5,
                     }}
                   >
-                    <span style={{ display: "flex" }}>Hack</span>
-                    <span
-                      style={{
-                        display: "flex",
-                        background: honey,
-                        color: brown,
-                        borderRadius: 6,
-                        padding: "1px 7px",
-                        margin: "0 3px",
-                      }}
-                    >
-                      (H)
-                    </span>
-                    <span style={{ display: "flex" }}>er413</span>
+                    <span style={{ display: "flex" }}>Hack(H)er413</span>
                     <span
                       style={{
                         display: "flex",
