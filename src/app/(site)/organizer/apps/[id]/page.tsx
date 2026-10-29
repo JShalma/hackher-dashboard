@@ -4,6 +4,7 @@ import { cache, type ReactNode } from "react";
 
 import { PageHeader } from "@/components/content";
 import { Section } from "@/components/layout";
+import { ApplicationDecisionActions } from "@/components/organizer/application-actions";
 import { Button } from "@/components/ui/button";
 import { applicationFormSections, applicationFormFields } from "@/content/application-form";
 import { customKeyFor } from "@/lib/applications/map-form-to-db";
@@ -54,7 +55,7 @@ function Timestamp({ value, empty = "Not provided" }: { value: Date | null; empt
     : <>{empty}</>;
 }
 
-/** Read-only organizer view; authorization and missing-id handling live in the loader. */
+/** Organizer application detail; authorization and missing-id handling live in the loader. */
 export default async function OrganizerAppDetailPage({ params }: PageProps) {
   const { id } = await params;
   const app = await loadApplication(id);
@@ -78,9 +79,16 @@ export default async function OrganizerAppDetailPage({ params }: PageProps) {
 
       <Section spacing="md" className="pt-4 sm:pt-8">
         <div className="flex max-w-3xl flex-col gap-8">
-          <Button asChild variant="outline" className="self-start">
-            <Link href="/organizer/apps">Back to list</Link>
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button asChild variant="outline">
+              <Link href="/organizer/apps">Back to list</Link>
+            </Button>
+            <ApplicationDecisionActions
+              clerkUserId={app.clerkUserId}
+              flagged={app.flagged}
+              status={app.status}
+            />
+          </div>
           <section aria-labelledby="application-record" className="border-t border-border pt-6">
             <h2 id="application-record" className="mb-4 text-xl font-semibold tracking-tight">Application record</h2>
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
@@ -89,7 +97,11 @@ export default async function OrganizerAppDetailPage({ params }: PageProps) {
               <DetailField label="Created"><Timestamp value={app.createdAt} /></DetailField>
               <DetailField label="Submitted"><Timestamp value={app.submittedAt} empty="Not submitted" /></DetailField>
               <DetailField label="Last updated"><Timestamp value={app.updatedAt} /></DetailField>
+              <DetailField label="Status updated"><Timestamp value={app.statusUpdatedAt} empty="Not set" /></DetailField>
+              <DetailField label="Status updated by">{formatApplicationValue(app.statusUpdatedBy)}</DetailField>
               <DetailField label="Flagged">{formatApplicationValue(app.flagged)}</DetailField>
+              <DetailField label="Flagged at"><Timestamp value={app.flaggedAt} empty="Not flagged" /></DetailField>
+              <DetailField label="Flagged by">{formatApplicationValue(app.flaggedBy)}</DetailField>
               <DetailField label="Application ID">{app.id}</DetailField>
               <DetailField label="Clerk user ID">{app.clerkUserId}</DetailField>
             </dl>

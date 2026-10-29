@@ -27,6 +27,9 @@ vi.mock("@/components/layout", async () => ({
   ...await import("@/components/layout/section"),
 }));
 vi.mock("@/components/content", async () => import("@/components/content/page-header"));
+vi.mock("@/components/organizer/application-actions", () => ({
+  ApplicationDecisionActions: () => null,
+}));
 
 import DetailPage, { generateMetadata } from "@/app/(site)/organizer/apps/[id]/page";
 import ListPage from "@/app/(site)/organizer/apps/page";

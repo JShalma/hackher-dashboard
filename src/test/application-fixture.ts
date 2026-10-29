@@ -30,6 +30,10 @@ export function applicationFixture(overrides: Partial<Application> = {}): Applic
     createdAt: new Date("2026-10-20T12:00:00Z"),
     submittedAt: new Date("2026-10-21T15:30:00Z"),
     updatedAt: new Date("2026-10-22T18:45:00Z"),
+    statusUpdatedBy: "user_reviewer",
+    statusUpdatedAt: new Date("2026-10-22T18:45:00Z"),
+    flaggedBy: "user_reviewer",
+    flaggedAt: new Date("2026-10-22T18:45:00Z"),
     customFields: structuredClone(fullAnswers), ...overrides,
   };
 }
@@ -43,6 +47,10 @@ export const expectedColumns = {
   createdAt: ["Created", "Oct 20, 2026, 8:00 AM (America/New_York)"],
   submittedAt: ["Submitted", "Oct 21, 2026, 11:30 AM (America/New_York)"],
   updatedAt: ["Last updated", "Oct 22, 2026, 2:45 PM (America/New_York)"],
+  statusUpdatedAt: ["Status updated", "Oct 22, 2026, 2:45 PM (America/New_York)"],
+  statusUpdatedBy: ["Status updated by", "user_reviewer"],
+  flaggedAt: ["Flagged at", "Oct 22, 2026, 2:45 PM (America/New_York)"],
+  flaggedBy: ["Flagged by", "user_reviewer"],
 } satisfies Record<Exclude<keyof Application, "customFields">, [string, string]>;
 
 // Explicit product expectations, not a call to the production value formatter.
