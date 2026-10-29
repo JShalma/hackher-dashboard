@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { db } from "@/db"
 import { eq } from 'drizzle-orm';
@@ -6,10 +6,14 @@ import { applications } from '@/db/schema';
 import   {applicationStatusEnum} from '@/db/schema';
 import { requireOrganizer } from "@/lib/auth";
 
+/**
+ * Organizer list read. Status update / Accept-Deny actions must also call
+ * `requireOrganizer()` and enforce transition rules (task 31/37) — do not
+ * add applicant-callable writes here.
+ */
 export async function fetchAppsList() {
     await requireOrganizer();
-    const appsList = await db.select().from(applications);
-    return appsList;
+    return await db.select().from(applications);;
 } 
 
 export type Status = (typeof applicationStatusEnum.enumValues)[number];

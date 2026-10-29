@@ -11,12 +11,20 @@ export const applyIntro = {
 /** Application link; the in-repo flow lives at `/apply`. */
 export const applyUrl = "/apply";
 
+/**
+ * Single toggle for marketing CTAs + apply form + server submit.
+ * Flip `isOpen` when the cycle opens/closes; keep `deadline` copy in sync.
+ */
 export const applyStatus = {
   isOpen: false,
-  /** Shown near the CTA. */
+  /** Shown near CTAs and on the form when closed. */
   deadline:
     "Applications for 2026 are now closed. Join our mailing list to be the first to know when 2027 opens.",
 };
+
+/** Short privacy note under the apply form submit row. */
+export const applyPrivacyNote =
+  "We use your information only for Hack(H)er413 admissions and event logistics. We never sell it.";
 
 /** Mailing-list signup, surfaced while applications are closed. */
 export const mailingListUrl = "https://forms.gle/YmY38wRxLSWWFQkKA";

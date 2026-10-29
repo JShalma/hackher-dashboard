@@ -49,7 +49,7 @@ export const applications = pgTable(
       .$type<ApplicationCustomFields>()
       .notNull()
       .default({}),
-    /** Optional suggested resume link (upload can replace this later). */
+    /** Resume PDF URL (Vercel Blob upload or external link). */
     resumeUrl: text("resume_url"),
     flagged: boolean("flagged").notNull().default(false),
     submittedAt: timestamp("submitted_at", { withTimezone: true }),

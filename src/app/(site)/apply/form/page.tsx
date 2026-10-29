@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ApplyForm } from "@/components/apply/application-form";
 import { PageHeader } from "@/components/content";
 import { Section } from "@/components/layout";
+import { applyPrivacyNote, applyStatus } from "@/content/apply";
 import { requireUser } from "@/lib/auth";
 
 import { mapApplicationToFormValues } from "@/lib/applications/map-db-to-form";
@@ -17,23 +18,37 @@ export const metadata: Metadata = {
 };
 
 /**
- * Auth-gated apply form. Fields + validation come from the application-form
- * config; persistence and submit wiring land in the server-action task.
+ * Auth-gated apply form. Open/closed comes from `applyStatus` (same toggle as
+ * marketing CTAs); submit is also rejected server-side when closed.
  */
 export default async function ApplyFormPage() {
   await requireUser();
   const application = await getApplication();
-  const applicationFormValues = application ? mapApplicationToFormValues(application) : { ...defaultApplicationValues }; 
+  const applicationFormValues = application
+    ? mapApplicationToFormValues(application)
+    : { ...defaultApplicationValues };
+
+  const submissionsOpen = applyStatus.isOpen;
 
   return (
     <>
       <PageHeader
         title="Your application"
-        lead="About ten minutes. Answer what you can - everything is validated before it counts."
+        lead={
+          submissionsOpen
+            ? "About ten minutes. Answer what you can - everything is validated before it counts."
+            : applyStatus.deadline
+        }
       />
 
       <Section spacing="md" className="pt-4 sm:pt-8">
-        <ApplyForm onSubmit={submitApplication} defaultValues={applicationFormValues}  />
+        <ApplyForm
+          onSubmit={submitApplication}
+          defaultValues={applicationFormValues}
+          disabled={!submissionsOpen}
+          closedMessage={applyStatus.deadline}
+          privacyNote={applyPrivacyNote}
+        />
       </Section>
     </>
   );
