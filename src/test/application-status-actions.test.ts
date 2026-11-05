@@ -34,6 +34,7 @@ vi.mock("@/db", () => ({
 }));
 
 import {
+  bulkUpdateApplicationStatus,
   flagApplication,
   updateApplicationStatus,
 } from "@/app/(site)/organizer/apps/actions";
@@ -52,7 +53,7 @@ beforeEach(() => {
 });
 
 describe("updateApplicationStatus", () => {
-  it.each(["accepted", "denied", "waitlisted"] as const)(
+  it.each(["accepted", "denied"] as const)(
     "allows decision status %s and records audit fields",
     async (status) => {
       await updateApplicationStatus(status, "user_priya");
@@ -68,12 +69,15 @@ describe("updateApplicationStatus", () => {
     },
   );
 
-  it.each(["draft", "submitted"] as const)("rejects non-decision status %s", async (status) => {
-    await expect(updateApplicationStatus(status, "user_priya")).rejects.toThrow(
-      "Invalid application status.",
-    );
-    expect(session.update).not.toHaveBeenCalled();
-  });
+  it.each(["draft", "submitted", "waitlisted"] as const)(
+    "rejects non-decision status %s",
+    async (status) => {
+      await expect(updateApplicationStatus(status, "user_priya")).rejects.toThrow(
+        "Invalid application status.",
+      );
+      expect(session.update).not.toHaveBeenCalled();
+    },
+  );
 
   it("rejects missing applications", async () => {
     session.returning.mockResolvedValue([]);
@@ -86,6 +90,44 @@ describe("updateApplicationStatus", () => {
     session.currentUser.mockResolvedValue({ publicMetadata: { role: "attendee" } });
     await expect(updateApplicationStatus("accepted", "user_priya")).rejects.toThrow("403");
     expect(session.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("bulkUpdateApplicationStatus", () => {
+  it("updates many applications with the same decision", async () => {
+    session.returning.mockResolvedValue([
+      { id: "11111111-1111-4111-8111-111111111111" },
+      { id: "22222222-2222-4222-8222-222222222222" },
+    ]);
+
+    await expect(
+      bulkUpdateApplicationStatus(["user_a", "user_b", "user_a"], "accepted"),
+    ).resolves.toEqual({ updated: 2 });
+
+    expect(session.set).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "accepted",
+        statusUpdatedBy: "user_reviewer",
+      }),
+    );
+    expect(session.revalidatePath).toHaveBeenCalledWith("/organizer/apps", "layout");
+  });
+
+  it("rejects waitlisted and empty selections appropriately", async () => {
+    await expect(bulkUpdateApplicationStatus([], "accepted")).resolves.toEqual({
+      updated: 0,
+    });
+    expect(session.update).not.toHaveBeenCalled();
+    await expect(
+      bulkUpdateApplicationStatus(["user_a"], "waitlisted"),
+    ).rejects.toThrow("Invalid application status.");
+  });
+
+  it("requires an organizer", async () => {
+    session.currentUser.mockResolvedValue({ publicMetadata: { role: "attendee" } });
+    await expect(
+      bulkUpdateApplicationStatus(["user_a"], "denied"),
+    ).rejects.toThrow("403");
   });
 });
 

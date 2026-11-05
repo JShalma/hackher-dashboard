@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { createElement } from "react";
 import ts from "typescript";
 import { renderToStaticMarkup } from "react-dom/server";
 import { getTableColumns } from "drizzle-orm";
@@ -30,6 +31,40 @@ vi.mock("@/components/content", async () => import("@/components/content/page-he
 vi.mock("@/components/organizer/application-actions", () => ({
   ApplicationDecisionActions: () => null,
 }));
+vi.mock("@/components/organizer/applications-review-list", () => ({
+  ApplicationsReviewList: ({
+    apps,
+  }: {
+    apps: Array<{
+      id: string;
+      name: string;
+      email: string;
+      school: string;
+      levelOfStudy: string;
+      flagged: boolean;
+      reviewLabel: string | null;
+    }>;
+  }) =>
+    createElement(
+      "ul",
+      { className: "divide-y divide-border border-y border-border" },
+      apps.map((app) =>
+        createElement(
+          "li",
+          { key: app.id },
+          createElement(
+            "a",
+            { href: `/organizer/apps/${app.id}` },
+            app.name,
+            app.school,
+            app.levelOfStudy,
+            app.email,
+            app.reviewLabel,
+          ),
+        ),
+      ),
+    ),
+}));
 
 import DetailPage, { generateMetadata } from "@/app/(site)/organizer/apps/[id]/page";
 import ListPage from "@/app/(site)/organizer/apps/page";
@@ -44,13 +79,27 @@ beforeEach(() => {
   session.protect.mockResolvedValue({ userId: "user_reviewer" });
   session.currentUser.mockResolvedValue({ publicMetadata: { role: "organizer" } });
   rows = [applicationFixture()];
-  session.query.mockImplementation(async () => ({
+  session.query.mockImplementation(async (sql: string) => {
+    // Auto-flag sync for non-university applicants.
+    if (/\bupdate\b/i.test(sql)) {
+      return { rows: [] };
+    }
+    // Count/groupBy query for tab badges — return [status, total] rows.
+    if (/\bcount\b/i.test(sql)) {
+      const totals = new Map<string, number>();
+      for (const row of rows) {
+        totals.set(row.status, (totals.get(row.status) ?? 0) + 1);
+      }
+      return { rows: [...totals.entries()].map(([status, total]) => [status, total]) };
+    }
     // pg-proxy returns positional column values; Drizzle maps timestamps back.
-    rows: rows.map((row) => Object.keys(getTableColumns(applications)).map((key) => {
-      const value = row[key as keyof Application];
-      return value instanceof Date ? value.toISOString() : value;
-    })),
-  }));
+    return {
+      rows: rows.map((row) => Object.keys(getTableColumns(applications)).map((key) => {
+        const value = row[key as keyof Application];
+        return value instanceof Date ? value.toISOString() : value;
+      })),
+    };
+  });
 });
 
 function text(html: string): string {
@@ -69,8 +118,13 @@ function details(html: string) {
   return new Map([...detailMarkup(html)].map(([label, value]) => [label, text(value)]));
 }
 async function renderDetail() { return renderToStaticMarkup(await DetailPage(props)); }
-async function renderList(q?: string | string[]) {
-  return renderToStaticMarkup(await ListPage({ searchParams: Promise.resolve({ q }) }));
+async function renderList(q?: string | string[], status?: string | string[]) {
+  return renderToStaticMarkup(await ListPage({ searchParams: Promise.resolve({ q, status }) }));
+}
+function listQueryCall() {
+  const call = session.query.mock.calls.find(([sql]) => typeof sql === "string" && sql.includes("order by"));
+  if (!call) throw new Error("Expected applications list query");
+  return call as [string, unknown[]];
 }
 
 describe("persisted field coverage (independent of the detail page)", () => {
@@ -225,30 +279,52 @@ describe("organizer detail rendering", () => {
 describe("application search SQL", () => {
   it.each(["Priya", "Chen", "priya.chen@example.edu", "pRiYa"])("searches first name, last name, and email for %s", async (term) => {
     await fetchAppsList(term);
-    const [sql, params] = session.query.mock.calls[0];
-    expect(sql).toContain('("applications"."first_name" ilike $1 or "applications"."last_name" ilike $2 or "applications"."email" ilike $3)');
-    expect(params).toEqual(Array(3).fill(`%${term}%`));
+    const [sql, params] = listQueryCall();
+    expect(sql).toContain('"applications"."status" = ');
+    expect(sql).toContain('("applications"."first_name" ilike');
     expect(sql).toContain('order by "applications"."created_at" desc, "applications"."id"');
+    expect(params[0]).toBe("submitted");
+    expect(params.slice(1)).toEqual(Array(3).fill(`%${term}%`));
   });
   it("ANDs full-name terms so they can match separate columns", async () => {
     await fetchAppsList("  Priya \t Chen\n");
-    const [sql, params] = session.query.mock.calls[0];
-    expect(sql).toContain('ilike $3) and ("applications"."first_name" ilike $4');
-    expect(params).toEqual(["%Priya%", "%Priya%", "%Priya%", "%Chen%", "%Chen%", "%Chen%"]);
+    const [sql, params] = listQueryCall();
+    expect(sql).toContain('ilike');
+    expect(params[0]).toBe("submitted");
+    expect(params.slice(1)).toEqual(["%Priya%", "%Priya%", "%Priya%", "%Chen%", "%Chen%", "%Chen%"]);
   });
-  it.each([undefined, "", " \t\n"])("does not filter an empty search (%s)", async (query) => {
+  it.each([undefined, "", " \t\n"])("filters by submitted status when search is empty (%s)", async (query) => {
     await fetchAppsList(query);
-    const [sql, params] = session.query.mock.calls[0];
-    expect(sql).not.toContain(" where ");
-    expect(params).toEqual([]);
+    const [sql, params] = listQueryCall();
+    expect(sql).toContain('"applications"."status" = ');
+    expect(params).toEqual(["submitted"]);
+  });
+  it("filters by the requested review tab status", async () => {
+    await fetchAppsList("", "draft");
+    const [sql, params] = listQueryCall();
+    expect(sql).toContain('"applications"."status" = ');
+    expect(params).toEqual(["draft"]);
+  });
+  it("includes legacy waitlisted rows in the not-accepted tab", async () => {
+    await fetchAppsList("", "denied");
+    const [sql, params] = listQueryCall();
+    expect(sql).toMatch(/in\s*\(/i);
+    expect(params).toEqual(expect.arrayContaining(["denied", "waitlisted"]));
+  });
+  it("filters the flagged tab to flagged apps still awaiting review", async () => {
+    await fetchAppsList("", "flagged");
+    const [sql, params] = listQueryCall();
+    expect(sql).toContain('"applications"."flagged" = ');
+    expect(sql).toContain('"applications"."status" = ');
+    expect(params).toEqual(expect.arrayContaining([true, "submitted"]));
   });
   it("escapes literal percent, underscore, and backslash", async () => {
     await fetchAppsList("a%b_c\\d");
-    expect(session.query.mock.calls[0][1]).toEqual(Array(3).fill("%a\\%b\\_c\\\\d%"));
+    expect(listQueryCall()[1].slice(1)).toEqual(Array(3).fill("%a\\%b\\_c\\\\d%"));
   });
   it("parameterizes SQL-looking input", async () => {
     await fetchAppsList("x' OR 1=1--");
-    const [sql, params] = session.query.mock.calls[0];
+    const [sql, params] = listQueryCall();
     expect(sql).not.toContain("1=1");
     expect(params).toContain("%x'%");
     expect(params).toContain("%1=1--%");
@@ -261,29 +337,45 @@ describe("search page", () => {
     expect(html).toContain('action="/organizer/apps" method="get"');
     expect(html).toContain('name="q"');
     expect(html).toContain('value="Priya"');
-    expect(text(html)).toContain("1 application matching “Priya”");
+    expect(text(html)).toContain("1 submitted application matching “Priya”");
     expect(text(html)).toContain("Priya Chen");
+    expect(text(html)).toContain("University of Massachusetts Amherst");
+    expect(text(html)).toContain("Undergraduate");
     expect(text(html)).toContain(rows[0].email);
     expect(html).toContain(`href="/organizer/apps/${rows[0].id}"`);
     expect(text(html)).toContain("Clear search");
-    expect(session.query.mock.calls[0][1]).toEqual(Array(3).fill("%Priya%"));
+    expect(text(html)).toContain("Submitted");
+    expect(text(html)).toContain("Flagged");
+    expect(text(html)).toContain("Not accepted");
+    expect(text(html)).not.toContain("Drafts");
+    expect(listQueryCall()[1].slice(1)).toEqual(Array(3).fill("%Priya%"));
   });
-  it("distinguishes no search results from an empty application queue", async () => {
+  it("distinguishes no search results from an empty submitted queue", async () => {
     rows = [];
     const noMatch = await renderList("nobody");
-    expect(text(noMatch)).toContain("No applications match your search.");
-    expect(noMatch).not.toContain("<ul");
+    expect(text(noMatch)).toContain("No submitted applications match your search.");
+    expect(noMatch).not.toContain('divide-y divide-border border-y');
     const html = await renderList();
-    expect(text(html)).toContain("No applications yet.");
+    expect(text(html)).toContain("No submitted applications to review.");
     expect(text(html)).not.toContain("Clear search");
-    expect(html).not.toContain("<ul");
+    expect(html).not.toContain('divide-y divide-border border-y');
   });
   it("handles repeated query parameters and multiple results", async () => {
     rows.push(applicationFixture({ id: "22222222-2222-4222-8222-222222222222", firstName: "Sam" }));
     const html = await renderList(["Priya", "Sam"]);
-    expect(text(html)).toContain("2 applications");
+    expect(text(html)).toContain("2 submitted applications");
     expect(text(html)).toContain("Sam Chen");
-    expect(session.query.mock.calls[0][1]).toEqual([]);
+    expect(listQueryCall()[1]).toEqual(["submitted"]);
+  });
+  it("keeps the active tab when clearing search", async () => {
+    const html = await renderList("Priya", "flagged");
+    expect(html).toContain('name="status"');
+    expect(html).toContain('value="flagged"');
+    expect(html).toContain('href="/organizer/apps?status=flagged"');
+  });
+  it("shows flagged apps in the current tab", async () => {
+    const html = await renderList();
+    expect(text(html)).toContain("Flagged");
   });
 });
 
