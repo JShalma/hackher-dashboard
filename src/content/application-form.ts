@@ -85,6 +85,24 @@ const projectTypeOptions: ApplicationFieldOption[] = [
   { value: "software", label: "Software" },
 ];
 
+/** From dashboard `hack_preference` software-side options. */
+const softwareTypeOptions: ApplicationFieldOption[] = [
+  { value: "front_end", label: "Front-end development" },
+  { value: "back_end", label: "Back-end development" },
+  { value: "full_stack", label: "Full-stack development" },
+  { value: "mobile", label: "Mobile development" },
+  { value: "other", label: "None, I am interested in something else" },
+];
+
+/** From dashboard `hardware_skills` options. */
+const hardwareTypeOptions: ApplicationFieldOption[] = [
+  { value: "embedded_systems", label: "Embedded Systems" },
+  { value: "robotics", label: "Robotics" },
+  { value: "wireless_communications", label: "Wireless Communications" },
+  { value: "circuits", label: "Circuits" },
+  { value: "3d_printing", label: "3D Printing" },
+];
+
 const schoolOptions: ApplicationFieldOption[] = [
   { value: "umass_amherst", label: "University of Massachusetts Amherst" },
   { value: "amherst_college", label: "Amherst College" },
@@ -378,6 +396,24 @@ export const applicationFormSections: ApplicationFormSection[] = [
         options: projectTypeOptions,
       },
       {
+        id: "softwareType",
+        label: "What type of software?",
+        type: "select",
+        required: false,
+        storage: "customFields",
+        options: softwareTypeOptions,
+        showWhen: { fieldId: "projectType", equals: "software" },
+      },
+      {
+        id: "hardwareType",
+        label: "What type of hardware?",
+        type: "select",
+        required: false,
+        storage: "customFields",
+        options: hardwareTypeOptions,
+        showWhen: { fieldId: "projectType", equals: "hardware" },
+      },
+      {
         id: "hasTeam",
         label: "Do you have a team?",
         type: "select",
@@ -396,6 +432,30 @@ export const applicationFormSections: ApplicationFormSection[] = [
         required: false,
         storage: "customFields",
         options: hearAboutOptions,
+      },
+      {
+        id: "playlistSong",
+        label: "Got a song for the event playlist?",
+        type: "text",
+        required: false,
+        storage: "customFields",
+        placeholder: "Song title or artist",
+        helpText:
+          "Optional. Add it on Spotify, or drop a song name here and we'll cue it up.",
+        links: [
+          {
+            label: "Open the Spotify playlist",
+            href: "https://open.spotify.com/playlist/7rCmyqknGvXy3ZJTAVlrM9?si=779a819f75df40eb&pt=de60ba1602e49abb57f1baa2cce1be0e",
+          },
+        ],
+      },
+      {
+        id: "snackSuggestion",
+        label: "What snacks/food would you want to see at the event?",
+        type: "textarea",
+        required: false,
+        storage: "customFields",
+        placeholder: "Trail mix, dumplings, late-night pizza…",
       },
     ],
   },

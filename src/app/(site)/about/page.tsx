@@ -6,7 +6,6 @@ import {
   StatGrid,
   CtaBand,
   RevealProse,
-  HexMark,
 } from "@/components/content";
 import { Values } from "@/components/about/values";
 import { primaryCta } from "@/content/apply";
@@ -29,18 +28,14 @@ export default function AboutPage() {
 
       <Section spacing="lg">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_1.1fr] lg:gap-16">
-          <h2 className="flex items-start gap-3 text-display text-balance">
-            <HexMark size="md" tone="honey" className="mt-[0.55em]" />
-            <span>{aboutStory.title}</span>
-          </h2>
+          <h2 className="text-display text-balance">{aboutStory.title}</h2>
           <RevealProse paragraphs={aboutStory.body} className="lg:pt-2" />
         </div>
       </Section>
 
       <Section tone="espresso" spacing="lg">
-        <h2 className="flex items-start gap-3 text-display text-balance text-cream">
-          <HexMark size="md" tone="sky" className="mt-[0.55em]" />
-          <span>What shapes the weekend</span>
+        <h2 className="text-display text-balance text-cream">
+          What shapes the weekend
         </h2>
         <Values tone="onDark" />
       </Section>

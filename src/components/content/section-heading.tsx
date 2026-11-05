@@ -1,26 +1,22 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { HexMark } from "@/components/content/hex-mark";
 
 type SectionHeadingProps = {
   title: React.ReactNode;
   description?: React.ReactNode;
   /** Center-align the block (default left). Prefer left - less template-y. */
   align?: "left" | "center";
-  /** Show a honeycomb tick before the title. */
-  hex?: boolean;
   className?: string;
 };
 
 /**
- * Section title block. No eyebrow kicker - titles stand alone with optional hex.
+ * Section title block. No eyebrow kicker - titles stand alone.
  */
 export function SectionHeading({
   title,
   description,
   align = "left",
-  hex = true,
   className,
 }: SectionHeadingProps) {
   return (
@@ -31,23 +27,9 @@ export function SectionHeading({
         className,
       )}
     >
-      <h2 className="flex items-start gap-3 text-display text-balance">
-        {hex ? (
-          <HexMark
-            size="md"
-            tone="honey"
-            className={cn("mt-[0.55em]", align === "center" && "hidden")}
-          />
-        ) : null}
-        <span>{title}</span>
-      </h2>
+      <h2 className="text-display text-balance">{title}</h2>
       {description ? (
-        <p
-          className={cn(
-            "mt-4 text-lead text-muted-foreground text-pretty",
-            hex && align === "left" && "pl-[1.625rem]",
-          )}
-        >
+        <p className="mt-4 text-lead text-muted-foreground text-pretty">
           {description}
         </p>
       ) : null}

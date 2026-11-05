@@ -22,8 +22,7 @@ export default function FaqPage() {
               key={category.name}
               className="grid gap-6 lg:grid-cols-[minmax(0,16rem)_1fr] lg:gap-12"
             >
-              <h2 className="flex items-center gap-2.5 text-sm font-medium text-muted-foreground lg:pt-4">
-                <HexMark size="sm" tone={i % 2 === 0 ? "honey" : "sky"} />
+              <h2 className="text-sm font-medium text-muted-foreground lg:pt-4">
                 {category.name}
               </h2>
               <FaqAccordion items={category.items} idPrefix={`faq-${i}`} />

@@ -6,7 +6,6 @@ import {
   ProjectCard,
   CtaBand,
   RevealGrid,
-  HexMark,
 } from "@/components/content";
 import {
   projectYears,
@@ -42,8 +41,7 @@ export default function ProjectsPage() {
             return (
               <div key={year}>
                 <div className="mb-6">
-                  <h2 className="flex items-center gap-2.5 text-sm font-medium text-sky-foreground/70">
-                    <HexMark size="sm" tone="honey" />
+                  <h2 className="text-sm font-medium text-sky-foreground/70">
                     {year} winners
                   </h2>
                 </div>

@@ -46,8 +46,12 @@ export type ApplicationCustomFields = {
   workshopInterest?: boolean;
   workshopDetails?: string;
   projectType?: string;
+  softwareType?: string;
+  hardwareType?: string;
   hasTeam?: string;
   howHeard?: string;
+  playlistSong?: string;
+  snackSuggestion?: string;
   hackherTerms?: boolean;
   mlhTerms?: boolean;
   mlhCommunications?: boolean;

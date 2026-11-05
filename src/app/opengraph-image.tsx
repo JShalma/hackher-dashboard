@@ -80,20 +80,7 @@ export default function Image() {
             color: cream,
           }}
         >
-          Hack
-          <span
-            style={{
-              display: "flex",
-              background: honey,
-              color: brand.brown,
-              borderRadius: 10,
-              padding: "0 10px",
-              margin: "0 4px",
-            }}
-          >
-            (H)
-          </span>
-          er413
+          Hack(H)er413
         </div>
       </div>
     ),

@@ -274,17 +274,21 @@ function ApplicationFieldBody({
   } else {
     const inputType =
       field.type === "tel" ? "tel" : field.type === "url" ? "url" : "text";
+    const linksId = field.links?.length ? `${field.id}-links` : undefined;
+    const describedBy = [helpId, linksId].filter(Boolean).join(" ") || undefined;
     control_ = (
       <Input
         id={field.id}
         type={inputType}
         placeholder={field.placeholder}
         aria-invalid={invalid}
-        aria-describedby={helpId}
+        aria-describedby={describedBy}
         {...register(field.id)}
       />
     );
   }
+
+  const linksId = field.links?.length ? `${field.id}-links` : undefined;
 
   return (
     <Field data-invalid={invalid}>
@@ -292,6 +296,25 @@ function ApplicationFieldBody({
       {control_}
       {field.helpText ? (
         <FieldDescription id={helpId}>{field.helpText}</FieldDescription>
+      ) : null}
+      {field.links?.length ? (
+        <FieldDescription id={linksId} className="flex flex-wrap gap-x-3 gap-y-1">
+          {field.links.map((link) => {
+            const external = link.href.startsWith("http");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className="underline underline-offset-2 hover:text-foreground"
+                {...(external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </FieldDescription>
       ) : null}
       <FieldError errors={[error]} />
     </Field>

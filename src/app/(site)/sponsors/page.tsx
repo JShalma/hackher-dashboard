@@ -6,7 +6,6 @@ import {
   SponsorCard,
   CtaBand,
   RevealGrid,
-  HexMark,
 } from "@/components/content";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
@@ -42,8 +41,7 @@ export default function SponsorsPage() {
             return (
               <div key={tier}>
                 <div className="mb-8">
-                  <h2 className="flex items-center gap-2.5 text-sm font-medium text-muted-foreground">
-                    <HexMark size="sm" tone="honey" />
+                  <h2 className="text-sm font-medium text-muted-foreground">
                     {meta.label}
                   </h2>
                   {meta.blurb ? (

@@ -1,9 +1,11 @@
 /**
- * Team content. Organizers grouped by team (committee). `image` is optional -
- * OrganizerCard falls back to a monogram avatar so the page looks intentional
- * before real headshots are added.
+ * Team content. Organizers grouped by team (committee). Solo `image` is
+ * optional - OrganizerCard falls back to a monogram avatar so the page looks
+ * intentional before real headshots are added.
  *
- * Roster reflects the 2027 organizing team.
+ * Optional `teamIntro.groupImage` = full-org hero under the page header.
+ *
+ * Headshots in /public/team/2027 are face-centered chest-up crops.
  */
 
 export type Organizer = {
@@ -20,7 +22,11 @@ export type TeamGroup = {
   members: Organizer[];
 };
 
-export const teamIntro = {
+export const teamIntro: {
+  title: string;
+  lead: string;
+  groupImage?: string;
+} = {
   title: "The students who put this on.",
   lead: "Hack(H)er413 is organized entirely by UMass Amherst students who volunteer their time to build something bigger than themselves.",
 };
@@ -111,7 +117,6 @@ export const team: TeamGroup[] = [
       },
     ],
   },
-
   {
     name: "Technology",
     members: [
@@ -135,6 +140,25 @@ export const team: TeamGroup[] = [
         pronouns: "she/her",
         image: "/team/2027/linh-dang.jpg",
         linkedin: "https://www.linkedin.com/in/linhdang-felix/",
+      },
+    ],
+  },
+  {
+    name: "Hardware",
+    members: [
+      {
+        name: "Anaika Pathak",
+        role: "Co-Head of Hardware",
+        pronouns: "she/her",
+        image: "/team/2027/anaika-pathak.jpg",
+        linkedin: "https://www.linkedin.com/in/anaikapathak/",
+      },
+      {
+        name: "Rajarshi Das",
+        role: "Co-Head of Hardware",
+        pronouns: "he/him",
+        image: "/team/2027/rajarshi-das.jpg",
+        linkedin: "https://www.linkedin.com/in/rajarshi-das-rjds/",
       },
     ],
   },
