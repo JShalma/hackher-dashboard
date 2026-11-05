@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   flagApplication,
   updateApplicationStatus,
-  type DecisionStatus,
 } from "@/app/(site)/organizer/apps/actions";
+import type { DecisionStatus } from "@/lib/applications/review-status";
 
 type Props = {
   clerkUserId: string;
@@ -44,14 +44,6 @@ export function ApplicationDecisionActions({
         onClick={() => setStatus("accepted")}
       >
         Accept
-      </Button>
-      <Button
-        className="min-w-28"
-        variant="outline"
-        disabled={pending || status === "waitlisted"}
-        onClick={() => setStatus("waitlisted")}
-      >
-        Waitlist
       </Button>
       <Button
         className="min-w-28"

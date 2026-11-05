@@ -8,6 +8,10 @@ import { applyStatus } from "@/content/apply";
 import { db } from "@/db";
 import { applications } from "@/db/schema";
 import { applicationSchema } from "@/lib/applications/application-schema";
+import {
+  isNotUniversityStudent,
+  SYSTEM_FLAGGED_BY,
+} from "@/lib/applications/display";
 import { splitApplicationFormValues } from "@/lib/applications/map-form-to-db";
 import { requireOrganizer, requireUser } from "@/lib/auth";
 import { submitApplicationLimiter } from "@/lib/rate-limit";
@@ -133,6 +137,7 @@ export async function submitApplication(values: Record<string, unknown>) {
   }
 
   const submittedAt = new Date();
+  const autoFlag = isNotUniversityStudent(customFields);
   const [updated] = await db
     .update(applications)
     .set({
@@ -141,6 +146,13 @@ export async function submitApplication(values: Record<string, unknown>) {
       status: "submitted",
       submittedAt,
       updatedAt: submittedAt,
+      ...(autoFlag
+        ? {
+            flagged: true,
+            flaggedBy: SYSTEM_FLAGGED_BY,
+            flaggedAt: submittedAt,
+          }
+        : {}),
     })
     .where(
       and(
