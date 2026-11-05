@@ -31,6 +31,9 @@ vi.mock("@/components/layout", async () => ({
   ...await import("@/components/layout/section"),
 }));
 vi.mock("@/components/content", async () => import("@/components/content/page-header"));
+vi.mock("@/components/organizer/application-actions", () => ({
+  ApplicationDecisionActions: () => null,
+}));
 
 import { applicationSchema } from "@/lib/applications/application-schema";
 import { splitApplicationFormValues } from "@/lib/applications/map-form-to-db";
