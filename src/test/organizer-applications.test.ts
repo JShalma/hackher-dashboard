@@ -300,10 +300,10 @@ describe("application search SQL", () => {
     expect(params).toEqual(["submitted"]);
   });
   it("filters by the requested review tab status", async () => {
-    await fetchAppsList("", "draft");
+    await fetchAppsList("", "accepted");
     const [sql, params] = listQueryCall();
     expect(sql).toContain('"applications"."status" = ');
-    expect(params).toEqual(["draft"]);
+    expect(params).toEqual(["accepted"]);
   });
   it("includes legacy waitlisted rows in the not-accepted tab", async () => {
     await fetchAppsList("", "denied");
