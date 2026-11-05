@@ -28,7 +28,7 @@ export function OrganizerCard({
     <div
       className={cn(
         "group flex flex-col items-center text-center",
-        featured ? "w-44 sm:w-52" : "w-full max-w-[11rem] justify-self-center",
+        featured ? "w-44 sm:w-52" : "w-[11rem] shrink-0 justify-self-center",
       )}
     >
       <div
@@ -52,8 +52,9 @@ export function OrganizerCard({
               src={organizer.image}
               alt={organizer.name}
               fill
-              sizes={featured ? "208px" : "128px"}
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              quality={90}
+              sizes={featured ? "420px" : "320px"}
+              className="object-cover object-center"
             />
           ) : (
             <span

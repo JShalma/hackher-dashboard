@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Section } from "@/components/layout";
@@ -17,15 +18,32 @@ export default function TeamPage() {
     <>
       <PageHeader title={teamIntro.title} lead={teamIntro.lead} />
 
+      {teamIntro.groupImage ? (
+        <Section spacing="md" className="pt-4 sm:pt-8 pb-0 sm:pb-0">
+          <div className="relative aspect-[21/9] w-full overflow-hidden sm:aspect-[2.4/1]">
+            <Image
+              src={teamIntro.groupImage}
+              alt="The Hack(H)er413 organizing team"
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-cover object-center"
+            />
+          </div>
+        </Section>
+      ) : null}
+
       <Section spacing="lg" className="pt-4 sm:pt-8">
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-16">
           {team.map((group) => {
             const featured = group.name === "Directors";
+            // Fewer than 4 members: center the row so 2-up groups aren't left-stuck in a 4-col track.
+            const centered = featured || group.members.length < 4;
             return (
               <div key={group.name}>
                 <h2
                   className={
-                    featured
+                    centered
                       ? "mb-6 text-center text-sm font-medium text-muted-foreground"
                       : "mb-6 text-sm font-medium text-muted-foreground"
                   }
@@ -34,7 +52,7 @@ export default function TeamPage() {
                 </h2>
                 <RevealGrid
                   className={
-                    featured
+                    centered
                       ? "flex flex-wrap justify-center gap-x-12 gap-y-10"
                       : // Shared track: 2-up until lg, then 4-up so fours fill a row (no 3+1 orphan).
                         "grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-12"
